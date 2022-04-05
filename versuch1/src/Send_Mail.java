@@ -15,6 +15,7 @@ public class Send_Mail {
 	public static void sendMail() {
 		try {
 			// your code here
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
