@@ -48,6 +48,7 @@ public class Send_Mail {
 			System.out.println("Thank you, " + from + ", your mail has been sent to labrat@localhost at " + currentDate + ".");
 
 			// your code here
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
