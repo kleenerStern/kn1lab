@@ -1,0 +1,35 @@
+Zeile; Beschreibung
+
+1. Nachricht weißt MIME-Format auf
+2. Datum, an dem Mail versendet wurde
+3. Eindeutiger Nachrichten Identifikator
+4. Betreff
+5. Empfänger
+6. Absender
+7. Inhalts-typ: gemischte Inhalte, identifikator für grenzen des gemischten Inhalts
+
+9. Start des gemischten Inhalts
+10. Inhaltstyp: Text + HTML, dazu jeweilige grenzmarkierung
+
+12. grenzm. START Plaintext
+13. Inhaltstyp: text in utf-8
+14. transfer codierungs verfahren um verschiedene codierungen kompatibel zu machen
+Also 12-14: Header für neuste Nachricht
+
+16.-28: Text der neusten Nachricht
+
+30.-32: Header für vorangegangene Nachricht (also Zitierte)
+
+34.-48: Zitierte Nachricht mit tags zur formatierung
+
+50. grenzm. ENDE Plaintext
+51. grenzm. START Bild
+52.-56: Header für Bild Inhalt in jpeg Format mit base64 codierung
+
+58.-1759: base64 codiertes Bild
+1760. grenzm. weiteres Bild aka content des selben Types
+
+1761.-1765: Header für zweites base64 codiertes Bild
+
+1766.-3390: base64 codiertes Bild
+3391. grenzm. ENDE von multipart / alternative content
