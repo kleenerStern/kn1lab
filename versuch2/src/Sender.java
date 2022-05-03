@@ -31,39 +31,55 @@ public class Sender {
      * @throws IOException Wird geworfen falls Sockets nicht erzeugt werden können.
      */
     private void send() throws IOException {
-   	//Text einlesen und in Worte zerlegen
         Scanner scanner = new Scanner(System.in);
-        String[] userInput;
-        userInput = scanner.nextLine().split(" ");
+        String userInput;
+        String[] payloadString;
+        int seq = 0;
+        int ackNum = 0;
+        boolean ackFlag = false;
+   	//Text einlesen und in Worte zerlegen
+        userInput = scanner.nextLine();
+        userInput += " EOT";
+        payloadString = userInput.split(" ");
         // Socket erzeugen auf Port 9998 und Timeout auf eine Sekunde setzen
         DatagramSocket clientSocket = new DatagramSocket(9998);
         clientSocket.setSoTimeout(1000);
         // Iteration über den Konsolentext
         while (true) {
-            foreach (String input : userInput) {
+            for (String word : payloadString) {
 
-            }
-        	// Paket an Port 9997 senden
-            InetAddress address = packet.getAddress();
-            int port = 9997;
-            packet = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost().getAddress(), port);
-            clientSocket.send(packet);
+                Packet packetOut = new Packet(seq, ackNum, ackFlag, word.getBytes());
 
-            try {
-                // Auf ACK warten und erst dann Schleifenzähler inkrementieren
-                if(false) {
-                    throw new ClassNotFoundException("ClassNotFoundException");
+                // serialize Packet for sending
+                ByteArrayOutputStream b = new ByteArrayOutputStream();
+                ObjectOutputStream o = new ObjectOutputStream(b);
+                o.writeObject(packetOut);
+                byte[] buf = b.toByteArray();
+
+
+                // Paket an Port 9997 senden
+                InetAddress address = InetAddress.getByName("localhost");
+                DatagramPacket packet = new DatagramPacket(buf, buf.length,
+                        address, 9997);
+                clientSocket.send(packet);;
+
+                try {
+                    // Auf ACK warten und erst dann Schleifenzähler inkrementieren
+                    if (false) {
+                        throw new ClassNotFoundException("ClassNotFoundException");
+                    }
+                    if (false) {
+                        throw new SocketTimeoutException("SocketTimeoutException");
+                    }
+
+
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SocketTimeoutException e) {
+                    System.out.println("Receive timed out, retrying...");
                 }
-                if(false) {
-                    throw new SocketTimeoutException("SocketTimeoutException");
-                }
-                break;
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SocketTimeoutException e) {
-            	System.out.println("Receive timed out, retrying...");
             }
+            break;
         }
         
         // Wenn alle Packete versendet und von der Gegenseite bestätigt sind, Programm beenden
