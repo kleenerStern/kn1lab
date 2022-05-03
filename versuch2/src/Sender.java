@@ -1,10 +1,7 @@
 import java.io.*;
 import java.net.*;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.Arrays;
+import java.time.Duration;
 import java.util.concurrent.*;
 
 /**
@@ -34,56 +31,22 @@ public class Sender {
      * @throws IOException Wird geworfen falls Sockets nicht erzeugt werden können.
      */
     private void send() throws IOException {
-   	    //Text einlesen und in Worte zerlegen
-        System.out.println("Please input sentence to send: ");
+   	//Text einlesen und in Worte zerlegen
         Scanner scanner = new Scanner(System.in);
-        String inputString = scanner.nextLine();
-        ArrayList<String> wordArrayList = new ArrayList<>(Arrays.asList(inputString.split(" ")));
-        wordArrayList.add("EOT");
-        String[] words = wordArrayList.toArray(new String[0]);
-
+        String[] userInput;
+        userInput = scanner.nextLine().split(" ");
         // Socket erzeugen auf Port 9998 und Timeout auf eine Sekunde setzen
         DatagramSocket clientSocket = new DatagramSocket(9998);
         clientSocket.setSoTimeout(1000);
-
         // Iteration über den Konsolentext
-        int seq = 0;
-        int acknum = 0;
-        int payloadLength;
-        int i = 0;
-
-        byte[] receiveData = new byte[1024];
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
         while (true) {
-
-            byte[] payload = words[i].getBytes();
-            payloadLength = payload.length;
-
-            Packet packetOut = new Packet(seq,acknum,false,payload);
-
-            // Paket serialisieren
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            ObjectOutputStream o = new ObjectOutputStream(b);
-            o.writeObject(packetOut);
-            byte[] buf = b.toByteArray();
-
         	// Paket an Port 9997 senden
-            DatagramPacket packet = new DatagramPacket(buf, buf.length,InetAddress.getLocalHost(),9997);
-        	clientSocket.send(packet);
-
+        	
             try {
                 // Auf ACK warten und erst dann Schleifenzähler inkrementieren
-                clientSocket.receive(receivePacket);
-                ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(receivePacket.getData()));
-                Packet packetIn = (Packet)inputStream.readObject();
-
-                if (packetIn.getAckNum()==seq+payloadLength){
-                    seq = seq+payloadLength;
-                    i++;
-                    if (i==words.length){
-                        break;
-                    }
+                if(false) {
+                    throw new ClassNotFoundException("ClassNotFoundException");
+                    throw new SocketTimeoutException("SocketTimeoutException");
                 }
 
             } catch (ClassNotFoundException e) {

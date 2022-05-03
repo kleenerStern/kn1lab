@@ -39,6 +39,7 @@ public class Receive_Mail {
             boolean firstAccess = true;
             Scanner scanner = new Scanner(System.in);
             String userInput;
+
             int currentMsgNr = messages.length-1;
             do {
                 if (firstAccess && currentMsgNr > 0) {
