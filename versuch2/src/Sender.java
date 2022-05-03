@@ -1,8 +1,6 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-import java.util.Timer;
-import java.time.Duration;
 import java.util.concurrent.*;
 
 /**
@@ -38,7 +36,6 @@ public class Sender {
         int seq;
         int ackNum = 0;
         int exeptedAckNum;
-        boolean ackFlag = false;
         int timeoutTime = 1000;
         int wordIdx = 0;
         String receivedString = "";
@@ -49,12 +46,12 @@ public class Sender {
         // Socket erzeugen auf Port 9998 und Timeout auf eine Sekunde setzen
         DatagramSocket socket = new DatagramSocket(9998);
         socket.setSoTimeout(timeoutTime);
-        // Iteration über den Konsolentext
 
-        while (wordIdx < words.length) {
+        // Iteration über den Konsolentext
+        while (true) {
 
             seq = ackNum;
-            Packet packetOut = new Packet(seq, ackNum, ackFlag, words[wordIdx].getBytes());
+            Packet packetOut = new Packet(seq, ackNum, false, words[wordIdx].getBytes());
 
             // serialize Packet for sending
             ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -68,13 +65,17 @@ public class Sender {
             DatagramPacket packet = new DatagramPacket(buf, buf.length,
                     address, 9997);
             socket.send(packet);
+            // erwartete Acknowledgementnummer
             exeptedAckNum = seq + words[wordIdx].length();
             try {
                 // Auf ACK warten und erst dann Schleifenzähler inkrementieren
                 byte[] bufIn = new byte[256];
                 DatagramPacket rcvPacketRaw = new DatagramPacket(bufIn, bufIn.length);
                 socket.receive(rcvPacketRaw);
+
+                // wartet 1s auf Antwort
                 TimeUnit.MILLISECONDS.sleep(timeoutTime);
+
                 // deserialize Packet
                 ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(rcvPacketRaw.getData()));
                 Packet packetIn = (Packet) is.readObject();
@@ -86,24 +87,24 @@ public class Sender {
                 System.out.println("IsAckFlag: " + packetIn.isAckFlag());
                 System.out.println("Payload: " + payload);
                 */
-
+                // Ende vom String erreicht
                 if(payload.equals("EOT")) {
                     System.out.println("Received all packages\nReceived String: " + receivedString);
                     break;
                 }
-                // kein Paket angekommen
-                if(packetIn == null) {
-                    throw new SocketTimeoutException("SocketTimeoutException");
-                }
+
                 // uebertragung erfolgreich
                 if(packetIn.isAckFlag() && exeptedAckNum == packetIn.getAckNum()) {
                     ackNum = packetIn.getAckNum();
                     receivedString += payload + " ";
                     wordIdx++;
                 }
-
+                // --- FEHLERFÄLLE ---
                 // TODO: if (packetIn.isAckFlag() == false)
-
+                // kein Paket angekommen
+                if(packetIn == null) {
+                    throw new SocketTimeoutException("SocketTimeoutException");
+                }
                 if (false) {
                     throw new ClassNotFoundException("ClassNotFoundException");
                 }
