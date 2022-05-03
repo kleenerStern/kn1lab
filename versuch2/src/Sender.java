@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 import java.time.Duration;
 import java.util.concurrent.*;
 
@@ -30,16 +31,23 @@ public class Sender {
      * @throws IOException Wird geworfen falls Sockets nicht erzeugt werden können.
      */
     private void send() throws IOException {
-/*   	//Text einlesen und in Worte zerlegen
-
+   	//Text einlesen und in Worte zerlegen
+        Scanner scanner = new Scanner(System.in);
+        String[] userInput;
+        userInput = scanner.nextLine().split(" ");
         // Socket erzeugen auf Port 9998 und Timeout auf eine Sekunde setzen
-
+        DatagramSocket clientSocket = new DatagramSocket(9998);
+        clientSocket.setSoTimeout(1000);
         // Iteration über den Konsolentext
         while (true) {
         	// Paket an Port 9997 senden
         	
             try {
                 // Auf ACK warten und erst dann Schleifenzähler inkrementieren
+                if(false) {
+                    throw new ClassNotFoundException("ClassNotFoundException");
+                    throw new SocketTimeoutException("SocketTimeoutException");
+                }
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -54,7 +62,7 @@ public class Sender {
         if(System.getProperty("os.name").equals("Linux")) {
             clientSocket.disconnect();
         }
-*/
+
         System.exit(0);
     }
 }
