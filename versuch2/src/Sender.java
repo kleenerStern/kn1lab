@@ -40,14 +40,24 @@ public class Sender {
         clientSocket.setSoTimeout(1000);
         // Iteration über den Konsolentext
         while (true) {
+            foreach (String input : userInput) {
+
+            }
         	// Paket an Port 9997 senden
-        	
+            InetAddress address = packet.getAddress();
+            int port = 9997;
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost().getAddress(), port);
+            clientSocket.send(packet);
+
             try {
                 // Auf ACK warten und erst dann Schleifenzähler inkrementieren
                 if(false) {
                     throw new ClassNotFoundException("ClassNotFoundException");
+                }
+                if(false) {
                     throw new SocketTimeoutException("SocketTimeoutException");
                 }
+                break;
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
