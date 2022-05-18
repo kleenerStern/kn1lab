@@ -47,13 +47,17 @@ class MyTopo(Topo):
 # configuration
 def conf(network):
     # router addresses
+
+
     network['r1'].cmd('ip addr add 10.0.0.1/26 dev r1-eth0')
-    # zahlendreher bei der nas ip-Adresse (10.0.2.1/29)
-    network['r1'].cmd('ip addr add 10.0.1.2/29 dev r1-eth1')
+    # Fehler bei der nas ip-Adresse (10.0.2.1/29)
+    network['r1'].cmd('ip addr add 10.0.1.1/29 dev r1-eth1')
     network['r1'].cmd('ip addr add 10.0.1.64/31 dev r1-eth2')
     network['r1'].cmd('sysctl net.ipv4.conf.all.forwarding=1')
 
+
     network['r2'].cmd('ip addr add 10.0.2.1/25 dev r2-eth0')
+
     network['r2'].cmd('ip addr add 10.0.1.65/31 dev r2-eth1')
     network['r2'].cmd('sysctl net.ipv4.conf.all.forwarding=1')
 
@@ -67,8 +71,8 @@ def conf(network):
 
     network['nas'].cmd('ip route add default via 10.0.1.1')
 
-    network['r1'].cmd('ip route add 10.0.2.0 via 10.0.1.65')
-    network['r2'].cmd('ip route add 10.0.1.0 via 10.0.1.64')
+    network['r1'].cmd('ip route add 10.0.2.0/25 via 10.0.1.65')
+    network['r2'].cmd('ip route add 10.0.1.0/29 via 10.0.1.64')
 
 def nettopo(**kwargs):
     topo = MyTopo()
