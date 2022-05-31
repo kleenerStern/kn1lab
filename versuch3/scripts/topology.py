@@ -24,7 +24,7 @@ class MyTopo(Topo):
 
         # create switch
         sw1 = self.addSwitch('sw1')
-        sw2 = self.addSwithc('sw2')
+        sw2 = self.addSwitch('sw2')
 
         # create router
         r1 = self.addHost('r1', ip='10.0.0.1/26')
